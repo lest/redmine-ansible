@@ -1,0 +1,17 @@
+---
+- name: redmine bundle install
+  command: bundle install --without development test --path .bundle chdir=/home/deploy/redmine
+  sudo_user: deploy
+  notify: [reload nginx]
+- name: redmine rake tasks
+  command: bundle exec rake generate_secret_token db:migrate redmine:load_default_data REDMINE_LANG=en chdir=/home/deploy/redmine
+  sudo_user: deploy
+  notify: [reload nginx]
+- name: redmine rake plugins
+  command: bundle exec rake redmine:plugins chdir=/home/deploy/redmine
+  sudo_user: deploy
+  notify: [reload nginx]
+- name: redmine unzip themes
+  shell: find . -name '*.zip' -exec unzip {} \; chdir=/home/deploy/redmine/public/themes
+  sudo_user: deploy
+  notify: [reload nginx]

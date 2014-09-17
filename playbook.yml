@@ -1,0 +1,9 @@
+---
+- hosts: redmine
+  roles:
+    - common
+    - ruby
+    - passenger
+    - postgresql
+    - redmine
+  sudo: yes

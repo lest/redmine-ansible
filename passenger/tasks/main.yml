@@ -1,0 +1,14 @@
+- apt_key: id=561F9B9CAC40B2F7 keyserver=keyserver.ubuntu.com
+- apt_repository: repo='deb https://oss-binaries.phusionpassenger.com/apt/passenger trusty main'
+- apt: name={{ item }}
+  with_items:
+    - nginx-extras
+    - passenger
+- copy: src=passenger_ruby dest=/usr/local/bin/passenger_ruby mode=0755
+  notify: [restart nginx]
+- replace: dest=/etc/nginx/nginx.conf regexp='^(\s*)# (passenger_.*)$' replace='\1\2' validate='nginx -tc %s'
+  notify: [restart nginx]
+- replace: dest=/etc/nginx/nginx.conf regexp='^(\s*passenger_ruby )(.*)$' replace='\1/usr/local/bin/passenger_ruby;' validate='nginx -tc %s'
+  notify: [restart nginx]
+- file: path=/etc/nginx/sites-enabled/default state=absent
+  notify: [reload nginx]

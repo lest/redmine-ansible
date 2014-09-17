@@ -1,0 +1,6 @@
+---
+- apt: update_cache=yes cache_valid_time=3600
+- apt: upgrade=dist
+- apt: name=ntp
+- apt: name=fail2ban
+- lineinfile: dest=/etc/sudoers regexp='^%sudo\s+ALL\=' line='%sudo ALL=(ALL) NOPASSWD:ALL' validate='visudo -cf %s'

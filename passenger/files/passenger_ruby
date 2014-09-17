@@ -1,0 +1,4 @@
+#!/bin/bash
+source /etc/environment
+export PATH
+exec /usr/bin/env ruby $*

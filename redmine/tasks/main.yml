@@ -1,0 +1,45 @@
+---
+- apt: name={{ item }}
+  with_items:
+    - git
+    - mercurial
+    - build-essential
+    - imagemagick
+    - libmagickwand-dev
+    - unzip
+- user: name=deploy
+- postgresql_user: name=deploy
+  sudo_user: postgres
+- postgresql_db: name=redmine owner=deploy encoding='UTF-8' lc_collate='en_US.UTF-8' lc_ctype='en_US.UTF-8' template='template0'
+  sudo_user: postgres
+- git: repo=https://github.com/redmine/redmine.git dest=/home/deploy/redmine depth=1
+  sudo_user: deploy
+  notify: [redmine bundle install, redmine rake tasks]
+- copy: src=database.yml dest=/home/deploy/redmine/config/database.yml
+  sudo_user: deploy
+  notify: [redmine bundle install, redmine rake tasks]
+- copy: src=nginx.conf dest=/etc/nginx/sites-available/redmine
+  notify: [reload nginx]
+- file: src=/etc/nginx/sites-available/redmine dest=/etc/nginx/sites-enabled/redmine state=link
+  notify: [reload nginx]
+- copy: src=logrotate.conf dest=/etc/logrotate.d/redmine
+- git: repo={{ item.repo }} dest=/home/deploy/redmine/plugins/{{ item.name }} depth=1
+  sudo_user: deploy
+  with_items:
+    - name: 'redmine_custom_css'
+      repo: 'https://github.com/martin-denizet/redmine_custom_css.git'
+    - name: 'redmine_login_audit'
+      repo: 'https://github.com/martin-denizet/redmine_login_audit.git'
+  notify: [redmine bundle install, redmine rake plugins]
+- get_url: dest=/home/deploy/redmine/public/themes/{{ item.name }}.zip url={{ item.url }}
+  sudo_user: deploy
+  with_items:
+    - name: 'a1'
+      url: 'http://redminecrm.com/license_manager/7644/a1-1_1_2.zip'
+    - name: 'coffee'
+      url: 'http://redminecrm.com/license_manager/7645/coffee-0_0_4.zip'
+    - name: 'highrise'
+      url: 'http://redminecrm.com/license_manager/7646/highrise-1_1_2.zip'
+    - name: 'circle'
+      url: 'http://redminecrm.com/license_manager/11619/circle_theme-1_0_2.zip'
+  notify: [redmine unzip themes]

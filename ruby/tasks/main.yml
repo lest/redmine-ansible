@@ -1,0 +1,8 @@
+---
+- apt_repository: repo='ppa:brightbox/ruby-ng'
+- name: install ruby
+  apt: name={{ item }}
+  with_items:
+    - ruby2.1
+    - ruby2.1-dev
+- gem: name=bundler state=latest user_install=no
