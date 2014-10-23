@@ -1,4 +1,5 @@
 ---
+- copy: src=sources.list dest=/etc/apt/sources.list
 - apt: update_cache=yes cache_valid_time=3600
 - apt: upgrade=dist
 - apt: name=ntp
