@@ -33,6 +33,8 @@
       repo: 'https://github.com/martin-denizet/redmine_login_audit.git'
     - name: 'redmine_lightbox'
       repo: 'https://github.com/zipme/redmine_lightbox.git'
+    - name: 'redmine_inline_note_images_plugin'
+      repo: 'https://github.com/anjlab/redmine_inline_note_images_plugin.git'
   notify: [redmine bundle install, redmine rake plugins]
 - get_url: dest=/home/deploy/redmine/public/themes/{{ item.name }}.zip url={{ item.url }}
   sudo_user: deploy
