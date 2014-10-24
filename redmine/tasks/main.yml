@@ -36,6 +36,12 @@
     - name: 'redmine_inline_note_images_plugin'
       repo: 'https://github.com/anjlab/redmine_inline_note_images_plugin.git'
   notify: [redmine bundle install, redmine rake plugins]
+- get_url: dest=/home/deploy/redmine/plugins/{{ item.name }}.zip url={{ item.url }}
+  sudo_user: deploy
+  with_items:
+    - name: 'redmine_checklists'
+      url: 'http://redminecrm.com/license_manager/14218/redmine_checklists-3_0_1-light.zip'
+  notify: [redmine unzip plugins]
 - get_url: dest=/home/deploy/redmine/public/themes/{{ item.name }}.zip url={{ item.url }}
   sudo_user: deploy
   with_items:

@@ -11,6 +11,10 @@
   command: bundle exec rake redmine:plugins chdir=/home/deploy/redmine
   sudo_user: deploy
   notify: [reload nginx]
+- name: redmine unzip plugins
+  shell: find . -name '*.zip' -exec unzip {} \; chdir=/home/deploy/redmine/plugins
+  sudo_user: deploy
+  notify: [redmine rake plugins]
 - name: redmine unzip themes
   shell: find . -name '*.zip' -exec unzip {} \; chdir=/home/deploy/redmine/public/themes
   sudo_user: deploy
